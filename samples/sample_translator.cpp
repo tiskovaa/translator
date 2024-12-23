@@ -14,8 +14,8 @@ int main()
 		Translator t(temp);
 		cout << "Ответ = " << t.solve();
 	}
-	catch (const invalid_argument& error)
+	catch (const char* error_message)
 	{
-		cerr << "Ошибка: " << error.what() << endl;
+		cout <<error_message<<endl;
 	}
 }

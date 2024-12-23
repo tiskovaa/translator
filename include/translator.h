@@ -5,6 +5,7 @@
 #include "term.h"
 #include <string>
 #include <vector>
+#include <map>
 
 using namespace std;
 
@@ -17,6 +18,7 @@ private:
 	vector<Term*> str_terms;
 	bool LexicalAnalysis();
 	bool SyntacticAnalysis();
+	bool SyntacticAnalysis2();
 	void ToPostfix();
 	double Calculation();
 
@@ -37,7 +39,7 @@ public:
 			throw "error in lexical analysis";
 		}
 
-		if (!SyntacticAnalysis())
+		if ((SyntacticAnalysis()==false)||(SyntacticAnalysis2() == false))
 		{
 			throw "error in syntactic analysis";
 		}
@@ -192,6 +194,27 @@ bool Translator::SyntacticAnalysis()
 		}
 	}
 	return stack.empty();
+}
+std::map<type, char> type_status{
+	{NUMBER,0}, {OPERATOR, 1} , {OPENING_BRACKET,2},{CLOSING_BRACKET ,3}
+};
+
+bool Translator::SyntacticAnalysis2() {
+	char status = 0;
+	status = type_status[str_terms[0]->GetType()];
+	for (size_t i = 1; i < str_terms.size(); ++i) {
+		if (status == 0 || status == 3) {
+			if (type_status[str_terms[i]->GetType()] == 0 || type_status[str_terms[i]->GetType()] == 2) return false;
+			else status = type_status[str_terms[i]->GetType()];
+		}
+
+		else {
+			if ((type_status[str_terms[i]->GetType()] == 1) || (type_status[str_terms[i]->GetType()] == 3)) return false;
+			else status = type_status[str_terms[i]->GetType()];
+		}
+	}
+	if ((str_terms.back()->GetType() == OPERATOR) || (str_terms.back()->GetType() == OPENING_BRACKET)) return false;
+	return true;
 }
 
 double Translator::Calculation() {
