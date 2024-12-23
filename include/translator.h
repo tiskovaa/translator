@@ -200,6 +200,8 @@ std::map<type, char> type_status{
 };
 
 bool Translator::SyntacticAnalysis2() {
+	if((str_terms.front()->GetType()==CLOSING_BRACKET)||(str_terms.front()->GetType()==OPERATOR))
+		return false; 
 	char status = 0;
 	status = type_status[str_terms[0]->GetType()];
 	for (size_t i = 1; i < str_terms.size(); ++i) {
